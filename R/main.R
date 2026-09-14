@@ -14,8 +14,8 @@ rc <- rc |>
         dpi_true_id,
         school_name,
         accurate_agency_type,
-        wi_overall_score = overall_score,
-        wi_overall_rating = overall_rating,
+        overall_score,
+        overall_rating,
         school_enrollment,
         sch_ach,
         sch_growth,
@@ -31,14 +31,20 @@ ssm <- ssm |>
     select(
         school_year,
         dpi_true_id,
-        ssm_score,
-        ssm_rating
+        cfc_ssm_score = ssm_score,
+        cfc_ssm_rating = ssm_rating
     )
 
-rc |>
+all <- rc |>
     left_join(cfc_rated) |>
     left_join(ssm) |>
     left_join(
         schools |>
-            select(school_year, dpi_true_id, milwaukee_indicator)
+            select(
+                school_year,
+                dpi_true_id,
+                cfc_milwaukee_indicator = milwaukee_indicator
+            )
     )
+
+write_csv(all, "data/school_metrics_by_year.csv")
